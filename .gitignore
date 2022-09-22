@@ -19,6 +19,8 @@ lib64/
 parts/
 sdist/
 var/
+pcap_splitter/
+PcapPlusPlus/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -127,3 +129,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+fastapi_socketio/
+model/
