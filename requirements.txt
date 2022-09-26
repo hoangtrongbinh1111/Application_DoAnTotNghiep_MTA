@@ -1,0 +1,7 @@
+motor~=2.5.1
+PyJWT~=2.4.0
+bcrypt
+pymongo~=3.12.3
+pydantic[email,dotenv]~=1.9.0
+passlib~=1.7.4
+beanie~=1.10.8

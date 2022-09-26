@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import uuid
 from PIL import Image
 import binascii
 import asyncio
@@ -55,11 +56,20 @@ class Detect:
         while True:
             for index, item in enumerate(os.listdir(SAVE_PATH_BIN)):
                 file_path = os.path.join(SAVE_PATH_BIN, item)
+                mac_addr = item.split("_")[0]
                 sz = os.path.getsize(file_path)
                 if sz < MIN_SIZE_FILE:
                     os.remove(file_path)
                     continue
                 result = self.predict(file_path)
+                 
                 os.remove(file_path)
-                yield str(result)
+                res = {
+                    "id": str(uuid.uuid4()),
+                    "mac_address": str(mac_addr),
+                    "is_authen": False,
+                    "label": DEVICE_TYPE[str(result)]
+                }
+                print(res)
+                yield res
             await asyncio.sleep(60)
