@@ -68,7 +68,7 @@ class Detect:
                     "id": str(uuid.uuid4()),
                     "mac_address": str(mac_addr),
                     "is_authen": False,
-                    "label": DEVICE_TYPE[str(result)]
+                    "label": str(result)
                 }
                 print(res)
                 yield res

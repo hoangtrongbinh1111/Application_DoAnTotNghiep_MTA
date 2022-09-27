@@ -65,7 +65,7 @@ async def do_stuff():
 
 @app.on_event('startup')
 async def app_startup():
-    await initiate_database()
+    asyncio.create_task(initiate_database())
     asyncio.create_task(do_stuff())
 
 if __name__ == '__main__':
