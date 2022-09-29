@@ -7,6 +7,7 @@ from pydantic import BaseSettings
 from models.admin import Admin
 from models.student import Student
 from models.device import Device
+from models.log import Log
 
 
 class Settings(BaseSettings):
@@ -25,4 +26,4 @@ class Settings(BaseSettings):
 async def initiate_database():
     client = AsyncIOMotorClient(Settings().DATABASE_URL)
     await init_beanie(database=client.get_default_database(),
-                      document_models=[Admin, Student, Device])
+                      document_models=[Admin, Student, Device, Log])

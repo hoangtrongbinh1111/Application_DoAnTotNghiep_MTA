@@ -11,10 +11,15 @@ from config.config import initiate_database
 from routes.admin import router as AdminRouter
 from routes.student import router as StudentRouter
 from routes.device import router as DeviceRouter
+from routes.log import router as LogRouter
+from models.log import *
+from database.database import add_log
 import json
 import logging
 import sys
 import asyncio
+import time
+import datetime
 
 app = FastAPI()
 token_listener = JWTBearer()
@@ -41,6 +46,7 @@ async def read_root():
 app.include_router(AdminRouter, tags=["Administrator"], prefix="/admin")
 app.include_router(StudentRouter, tags=["Students"], prefix="/student", dependencies=[Depends(token_listener)])
 app.include_router(DeviceRouter, tags=["Devices"], prefix="/device", dependencies=[Depends(token_listener)])
+app.include_router(LogRouter, tags=["Logs"], prefix="/log", dependencies=[Depends(token_listener)])
 
 '''
     Server Fast API and SocketIO
@@ -61,6 +67,8 @@ async def test(sid, *args, **kwargs):
 '''
 async def do_stuff():
     async for response in detect.run_predict():
+        log = Log(id=response["id"],mac_address = response["mac_address"], label_detect = response["label_detect"], time_detect = datetime.datetime.now(), status = response["status"])
+        await log.insert()
         await sio.emit('notify_detect_iot_device', json.dumps(response))
 
 @app.on_event('startup')

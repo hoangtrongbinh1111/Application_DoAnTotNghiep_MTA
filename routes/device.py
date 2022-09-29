@@ -16,6 +16,16 @@ async def get_devices():
         "data": devices
     }
 
+@router.get("/statistic", response_description="Devices retrieved statistic", response_model=Response)
+async def get_devices_statistic():
+    devices_statistic = await retrieve_devices_statistic()
+    return {
+        "status_code": 200,
+        "response_type": "success",
+        "description": "Devices data retrieved statistic successfully",
+        "data": devices_statistic
+    }
+
 
 @router.get("/{id}", response_description="Device data retrieved", response_model=Response)
 async def get_device_data(id: PydanticObjectId):
@@ -46,7 +56,7 @@ async def add_device_data(device: Device = Body(...)):
 
 
 @router.delete("/{id}", response_description="Device data deleted from the database")
-async def delete_device_data(id: PydanticObjectId):
+async def delete_device_data(id: str):
     deleted_device = await delete_device(id)
     if deleted_device:
         return {

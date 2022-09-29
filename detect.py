@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import time
 import uuid
 from PIL import Image
 import binascii
@@ -67,9 +68,8 @@ class Detect:
                 res = {
                     "id": str(uuid.uuid4()),
                     "mac_address": str(mac_addr),
-                    "is_authen": False,
-                    "label": str(result)
+                    "label_detect": str(result),
+                    "status": 1
                 }
-                print(res)
                 yield res
             await asyncio.sleep(60)

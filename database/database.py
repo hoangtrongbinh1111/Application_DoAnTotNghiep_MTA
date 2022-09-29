@@ -5,10 +5,12 @@ from beanie import PydanticObjectId
 from models.admin import Admin
 from models.student import Student
 from models.device import Device
+from models.log import Log
 
 admin_collection = Admin
 student_collection = Student
 device_collection = Device
+log_collection = Log
 
 '''
     ADMIN
@@ -63,6 +65,14 @@ async def retrieve_devices() -> List[Device]:
     devices = await device_collection.all().to_list()
     return devices
 
+async def retrieve_devices_statistic():
+    devices_active = await device_collection.find(device_collection.status == 1).to_list()
+    devices_inactive = await device_collection.find(device_collection.status == 0).to_list()
+    return {
+        "devices_active": len(devices_active),
+        "devices_inactive": len(devices_inactive)
+    }
+
 
 async def add_device(new_device: Device) -> Device:
     device = await new_device.create()
@@ -75,7 +85,7 @@ async def retrieve_device(id: PydanticObjectId) -> Device:
         return device
 
 
-async def delete_device(id: PydanticObjectId) -> bool:
+async def delete_device(id: str) -> bool:
     device = await device_collection.get(id)
     if device:
         await device.delete()
@@ -92,3 +102,16 @@ async def update_device_data(id: PydanticObjectId, data: dict) -> Union[bool, De
         await device.update(update_query)
         return device
     return False
+
+'''
+    IoT Log
+'''
+async def retrieve_logs() -> List[Device]:
+    logs = await log_collection.find().sort(-log_collection.time_detect).limit(20).to_list()
+    return logs
+
+async def add_log(new_log: Log) -> Log:
+    device = await new_log.create()
+    return device
+
+
