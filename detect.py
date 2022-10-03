@@ -47,12 +47,14 @@ class Detect:
             pred_item = self.model_12label.predict(image) # predict class
             pred_item = np.argmax(pred_item, axis=1) # get class predicted max
             predict_class = pred_item[0]
+            label_device = DEVICE_MAJOR_TYPE[predict_class]
             if predict_class == 9:
                 pred_item = self.model_11label.predict(image) # predict class
                 pred_item = np.argmax(pred_item, axis=1) # get class predicted max
                 predict_class = pred_item[0]
-            return predict_class
-        return -1
+                label_device = DEVICE_MINOR_TYPE[predict_class]
+            return label_device
+        return DEVICE_MAJOR_TYPE[-1]
     async def run_predict(self):
         while True:
             for index, item in enumerate(os.listdir(SAVE_PATH_BIN)):
@@ -65,11 +67,12 @@ class Detect:
                 result = self.predict(file_path)
                  
                 os.remove(file_path)
-                res = {
-                    "id": str(uuid.uuid4()),
-                    "mac_address": str(mac_addr),
-                    "label_detect": str(result),
-                    "status": 1
-                }
-                yield res
+                if result != -1:
+                    res = {
+                        "id": str(uuid.uuid4()),
+                        "mac_address": str(mac_addr),
+                        "label_detect": str(result),
+                        "status": 1
+                    }
+                    yield res
             await asyncio.sleep(60)
