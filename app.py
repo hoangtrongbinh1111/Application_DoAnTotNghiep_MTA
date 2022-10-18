@@ -32,8 +32,8 @@ app.add_middleware(
 )
 sio = SocketManager(app=app)
 
-model_12label = load_model("/home/hoangtrongbinh/HoangTrongBinh/DoAnUngDung/server/model/checkpoint_best_12label.hdf5")
-model_11label = load_model("/home/hoangtrongbinh/HoangTrongBinh/DoAnUngDung/server/model/checkpoint_best_11label.hdf5")
+model_12label = load_model("/home/hoangtrongbinh/HoangTrongBinh/DoAnUngDung/server/model/major_model.hdf5")
+model_11label = load_model("/home/hoangtrongbinh/HoangTrongBinh/DoAnUngDung/server/model/minor_model.hdf5")
 detect = Detect(model_12label, model_11label)
 
 '''
@@ -67,9 +67,12 @@ async def test(sid, *args, **kwargs):
 '''
 async def do_stuff():
     async for response in detect.run_predict():
-        log = Log(id=response["id"],mac_address = response["mac_address"], label_detect = response["label_detect"], time_detect = datetime.datetime.now(), status = response["status"])
-        await log.insert()
-        await sio.emit('notify_detect_iot_device', json.dumps(response))
+        try:
+            log = Log(id=response["id"],mac_address = response["mac_address"], label_detect = response["label_detect"], time_detect = datetime.datetime.now(), status = response["status"])
+            await log.insert()
+            await sio.emit('notify_detect_iot_device', json.dumps(response))
+        except:
+            pass
 
 @app.on_event('startup')
 async def app_startup():

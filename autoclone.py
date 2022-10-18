@@ -58,4 +58,4 @@ while (True):
     #     for label in _handleDetectIoT():
     #         print(label)
     print("End check file in folder and wait for 60s to recheck!!!")
-    time.sleep(60)
+    time.sleep(LATENCY)
